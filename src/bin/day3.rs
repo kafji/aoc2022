@@ -84,18 +84,10 @@ fn find_common_element<'a>(v1: &'a str, v2: &'a str, v3: &'a str) -> Option<char
     let mut v2 = Vec::from_iter(v2);
     let mut v3 = Vec::from_iter(v3);
 
-    // sort vectors
-    if v2.len() < v1.len() {
-        mem::swap(&mut v1, &mut v2);
-    }
-    if v3.len() < v2.len() {
-        if v3.len() < v1.len() {
-            mem::swap(&mut v2, &mut v3);
-            mem::swap(&mut v1, &mut v2);
-        } else {
-            mem::swap(&mut v2, &mut v3);
-        }
-    }
+    // sort elements in each vectors
+    v1.sort_unstable();
+    v2.sort_unstable();
+    v3.sort_unstable();
 
     find_common_element_inner(&v1, &v2, &v3, 0, 0, 0)
 }
