@@ -2,7 +2,6 @@ use aoc2022::get_input_file;
 use std::{
     collections::HashSet,
     io::{BufRead, BufReader},
-    mem,
 };
 
 fn main() {
