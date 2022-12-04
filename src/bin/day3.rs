@@ -74,19 +74,10 @@ fn find_common_element_inner(
     find_common_element_inner(v1, v2, v3, i1, i2, i3)
 }
 
-fn find_common_element<'a>(v1: &'a str, v2: &'a str, v3: &'a str) -> Option<char> {
-    // remove duplicate elements from each vectors
-    let v1 = HashSet::<u8>::from_iter(v1.bytes());
-    let v2 = HashSet::<u8>::from_iter(v2.bytes());
-    let v3 = HashSet::<u8>::from_iter(v3.bytes());
-    let mut v1 = Vec::from_iter(v1);
-    let mut v2 = Vec::from_iter(v2);
-    let mut v3 = Vec::from_iter(v3);
-
-    // sort elements in each vectors
-    v1.sort_unstable();
-    v2.sort_unstable();
-    v3.sort_unstable();
+fn find_common_element(v1: &str, v2: &str, v3: &str) -> Option<char> {
+    let v1 = remove_dupe_and_sort(v1.bytes().collect());
+    let v2 = remove_dupe_and_sort(v2.bytes().collect());
+    let v3 = remove_dupe_and_sort(v3.bytes().collect());
 
     find_common_element_inner(&v1, &v2, &v3, 0, 0, 0)
 }
@@ -142,4 +133,47 @@ fn part_two() {
     }
 
     println!("{}", sum);
+}
+
+fn remove_dupe_and_sort(v: Vec<u8>) -> Vec<u8> {
+    let mut out = Vec::new();
+
+    for i in 0..v.len() {
+        let x = v[i];
+
+        if let Some(&y) = out.last() {
+            if y < x {
+                out.push(x);
+                continue;
+            }
+        } else {
+            out.push(x);
+            continue;
+        }
+
+        for j in 0..out.len() {
+            let y = out[j];
+            if x == y {
+                break;
+            }
+            if x < y {
+                out.insert(j, x);
+                break;
+            }
+        }
+    }
+
+    out
+}
+
+#[test]
+fn test_remove_dupe_and_sort() {
+    let out = remove_dupe_and_sort(vec![3, 1, 2, 4]);
+    assert_eq!(out, vec![1, 2, 3, 4]);
+
+    let out = remove_dupe_and_sort(vec![4, 1, 4]);
+    assert_eq!(out, vec![1, 4]);
+
+    let out = remove_dupe_and_sort(vec![]);
+    assert_eq!(out, vec![]);
 }
